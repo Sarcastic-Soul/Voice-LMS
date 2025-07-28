@@ -8,31 +8,29 @@ import {
     SelectValue,
 } from "./ui/select";
 import { subjects } from "@/constants";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { formUrlQuery, removeKeysFromUrlQuery } from "@jsmastery/utils";
 
 const SubjectFilter = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const query = searchParams.get("subject") || "";
 
     const [subject, setSubject] = useState(query);
 
     useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
         let newUrl = "";
+
         if (subject === "all") {
-            newUrl = removeKeysFromUrlQuery({
-                params: searchParams.toString(),
-                keysToRemove: ["subject"],
-            });
+            params.delete("subject");
+            newUrl = `${pathname}?${params.toString()}`;
         } else {
-            newUrl = formUrlQuery({
-                params: searchParams.toString(),
-                key: "subject",
-                value: subject,
-            });
+            params.set("subject", subject);
+            newUrl = `${pathname}?${params.toString()}`;
         }
+
         router.push(newUrl, { scroll: false });
     }, [subject]);
 

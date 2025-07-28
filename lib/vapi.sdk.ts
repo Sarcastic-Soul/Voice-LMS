@@ -1,3 +1,3 @@
-import Vapi from "@vapi-ai/web";
+import { CustomVoiceAI } from './services/customVoiceAI';
 
-export const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_WEB_TOKEN!);
+export const voiceAI = new CustomVoiceAI();
