@@ -31,6 +31,7 @@ const CompanionComponent = ({
 
     const {
         finalTranscript,
+        interimTranscript,
         isListening,
         hasRecognitionSupport,
         startListening,
@@ -50,6 +51,27 @@ const CompanionComponent = ({
             resetTranscript();
         }
     }, [finalTranscript, callStatus]);
+
+    // Auto-restart speech recognition if it stops unexpectedly
+    useEffect(() => {
+        if (callStatus === CallStatus.ACTIVE &&
+            hasRecognitionSupport &&
+            !isListening &&
+            !isSpeaking &&
+            !isProcessing &&
+            !isMuted) {
+
+            const timeout = setTimeout(() => {
+                console.log('Attempting to restart speech recognition...');
+                // Double-check conditions before restarting
+                if (callStatus === CallStatus.ACTIVE && !isListening && !isSpeaking && !isProcessing && !isMuted) {
+                    startListening();
+                }
+            }, 2000); // Increased delay to avoid race conditions
+
+            return () => clearTimeout(timeout);
+        }
+    }, [callStatus, hasRecognitionSupport, isListening, isSpeaking, isProcessing, isMuted, startListening]);
 
     // Lottie animation control
     useEffect(() => {
@@ -89,11 +111,11 @@ const CompanionComponent = ({
 
         const onSpeechStart = () => {
             setIsSpeaking(true);
-            setIsProcessing(false);
         };
 
         const onSpeechEnd = () => {
             setIsSpeaking(false);
+            setIsProcessing(false);
         };
 
         const onError = (error: Error) => {
@@ -122,12 +144,17 @@ const CompanionComponent = ({
         if (isProcessing || !transcript.trim()) return;
 
         setIsProcessing(true);
-        await voiceAI.processUserSpeech(transcript, {
-            subject,
-            topic,
-            style,
-            voice
-        });
+        try {
+            await voiceAI.processUserSpeech(transcript, {
+                subject,
+                topic,
+                style,
+                voice
+            });
+        } catch (error) {
+            console.error('Error in handleUserSpeech:', error);
+            setIsProcessing(false);
+        }
     };
 
     const toggleMicrophone = () => {
@@ -136,9 +163,17 @@ const CompanionComponent = ({
         setIsMuted(newMutedState);
 
         if (newMutedState) {
-            stopListening();
+            // Muting - stop listening
+            if (isListening) {
+                stopListening();
+            }
         } else if (callStatus === CallStatus.ACTIVE && hasRecognitionSupport) {
-            startListening();
+            // Unmuting - start listening only if not already listening
+            if (!isListening && !isSpeaking && !isProcessing) {
+                setTimeout(() => {
+                    startListening();
+                }, 100); // Small delay to ensure state is updated
+            }
         }
     };
 
@@ -270,6 +305,26 @@ const CompanionComponent = ({
                             🎤 Listening...
                         </div>
                     )}
+
+                    {/* Real-time speech recognition display */}
+                    {(interimTranscript && isListening && callStatus === CallStatus.ACTIVE) && (
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <p className="text-xs text-blue-600 mb-1 font-medium">You're saying:</p>
+                            <p className="text-sm text-blue-800 italic min-h-[20px]">
+                                "{interimTranscript}"
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Show waiting indicator when listening but no speech yet */}
+                    {(isListening && !interimTranscript && callStatus === CallStatus.ACTIVE) && (
+                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <p className="text-xs text-green-600 mb-1 font-medium">Waiting for your voice...</p>
+                            <p className="text-sm text-green-700 italic">
+                                Start speaking to see your words appear here
+                            </p>
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -278,15 +333,25 @@ const CompanionComponent = ({
                     {messages.map((message, index) => {
                         if (message.role === 'assistant') {
                             return (
-                                <p key={index} className="max-sm:text-sm">
-                                    {name.split(' ')[0].replace(/[.,]/g, '')}: {message.content}
-                                </p>
+                                <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p className="font-semibold text-black mb-2">
+                                        {name.split(' ')[0].replace(/[.,]/g, '')}:
+                                    </p>
+                                    <p className="text-gray-800 leading-relaxed">
+                                        {message.content}
+                                    </p>
+                                </div>
                             );
                         } else {
                             return (
-                                <p key={index} className="text-primary max-sm:text-sm">
-                                    {userName}: {message.content}
-                                </p>
+                                <div key={index} className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                                    <p className="font-semibold text-primary mb-2">
+                                        {userName}:
+                                    </p>
+                                    <p className="text-gray-800 leading-relaxed">
+                                        {message.content}
+                                    </p>
+                                </div>
                             );
                         }
                     })}

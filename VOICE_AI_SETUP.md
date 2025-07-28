@@ -1,20 +1,17 @@
 # Voice LMS - Custom Voice AI Setup
 
-This project has been updated to use a custom voice AI stack replacing VAPI with:
+This project uses a custom voice AI stack with:
 - **Browser Speech Recognition** for speech-to-text
 - **Google Gemini Flash 1.5** for AI conversations
-- **Google Cloud Text-to-Speech** for voice synthesis
+- **Browser Speech Synthesis** for voice synthesis (Text-to-Speech)
 
 ## Required Environment Variables
 
 Add these to your `.env` file:
 
 ```env
-# Google AI & Cloud Services
+# Google AI Services
 NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
-GOOGLE_CLOUD_PROJECT_ID=your_project_id_here
-GOOGLE_CLOUD_PRIVATE_KEY=your_private_key_here
-GOOGLE_CLOUD_CLIENT_EMAIL=your_client_email_here
 ```
 
 ## Setup Instructions
@@ -24,23 +21,9 @@ GOOGLE_CLOUD_CLIENT_EMAIL=your_client_email_here
 2. Create a new API key
 3. Add it to `NEXT_PUBLIC_GEMINI_API_KEY`
 
-### 2. Setup Google Cloud Text-to-Speech
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing one
-3. Enable the Text-to-Speech API
-4. Create a service account:
-   - Go to IAM & Admin > Service Accounts
-   - Create new service account
-   - Grant "Text-to-Speech Client" role
-   - Create and download JSON key
-5. Extract the following from the JSON key:
-   - `project_id` → `GOOGLE_CLOUD_PROJECT_ID`
-   - `private_key` → `GOOGLE_CLOUD_PRIVATE_KEY`
-   - `client_email` → `GOOGLE_CLOUD_CLIENT_EMAIL`
-
-### 3. Browser Compatibility
-The speech recognition feature requires a modern browser:
-- ✅ Chrome/Chromium
+### 2. Browser Compatibility
+Both speech recognition and synthesis features require a modern browser:
+- ✅ Chrome/Chromium (Recommended)
 - ✅ Edge
 - ✅ Safari
 - ❌ Firefox (limited support)
@@ -58,9 +41,10 @@ The speech recognition feature requires a modern browser:
 - Subject and topic specific tutoring
 
 ### Text-to-Speech
-- High-quality voice synthesis using Google Cloud
-- Multiple voice options
+- High-quality voice synthesis using browser's native Speech Synthesis API
+- Multiple voice options available based on system/browser
 - Real-time audio playback
+- No external API calls required
 
 ## Usage
 
@@ -79,9 +63,10 @@ The speech recognition feature requires a modern browser:
 - Try refreshing the page
 
 ### TTS Not Working
-- Verify Google Cloud credentials are correct
-- Check that Text-to-Speech API is enabled
-- Ensure the service account has proper permissions
+- Ensure you're using a supported browser
+- Check that speech synthesis is available in your browser/system
+- Try refreshing the page
+- Check browser console for error messages
 
 ### AI Responses Not Working
 - Verify Gemini API key is valid

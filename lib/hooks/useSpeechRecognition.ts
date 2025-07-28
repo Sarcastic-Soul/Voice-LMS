@@ -56,10 +56,12 @@ export const useSpeechRecognition = (
                 recognition.lang = lang;
 
                 recognition.onstart = () => {
+                    console.log('Speech recognition started');
                     setIsListening(true);
                 };
 
                 recognition.onend = () => {
+                    console.log('Speech recognition ended');
                     setIsListening(false);
                 };
 
@@ -86,6 +88,11 @@ export const useSpeechRecognition = (
                 recognition.onerror = (event: any) => {
                     console.error('Speech recognition error:', event.error);
                     setIsListening(false);
+
+                    // Don't auto-restart on certain error types
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        console.error('Speech recognition permission denied');
+                    }
                 };
             }
         }
@@ -98,19 +105,29 @@ export const useSpeechRecognition = (
     }, [continuous, interimResults, lang]);
 
     const startListening = useCallback(() => {
-        if (recognitionRef.current && hasRecognitionSupport) {
-            setTranscript('');
-            setInterimTranscript('');
-            setFinalTranscript('');
-            recognitionRef.current.start();
+        if (recognitionRef.current && hasRecognitionSupport && !isListening) {
+            try {
+                setTranscript('');
+                setInterimTranscript('');
+                setFinalTranscript('');
+                recognitionRef.current.start();
+            } catch (error) {
+                console.error('Error starting speech recognition:', error);
+                setIsListening(false);
+            }
         }
-    }, [hasRecognitionSupport]);
+    }, [hasRecognitionSupport, isListening]);
 
     const stopListening = useCallback(() => {
-        if (recognitionRef.current && hasRecognitionSupport) {
-            recognitionRef.current.stop();
+        if (recognitionRef.current && hasRecognitionSupport && isListening) {
+            try {
+                recognitionRef.current.stop();
+            } catch (error) {
+                console.error('Error stopping speech recognition:', error);
+                setIsListening(false);
+            }
         }
-    }, [hasRecognitionSupport]);
+    }, [hasRecognitionSupport, isListening]);
 
     const resetTranscript = useCallback(() => {
         setTranscript('');
