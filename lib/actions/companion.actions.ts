@@ -86,11 +86,22 @@ export const getRecentSessions = async (limit = 10) => {
         .from("session_history")
         .select(`companions:companion_id (*)`)
         .order("created_at", { ascending: false })
-        .limit(limit);
+        .limit(limit * 3); // Fetch more to account for duplicates
 
     if (error) throw new Error(error.message);
 
-    return data.map(({ companions }) => companions);
+    // Remove duplicates based on companion id and limit the results
+    const uniqueCompanions = new Map();
+
+    for (const session of data) {
+        const companion = session.companions as any;
+        if (companion && companion.id && !uniqueCompanions.has(companion.id)) {
+            uniqueCompanions.set(companion.id, companion);
+            if (uniqueCompanions.size >= limit) break;
+        }
+    }
+
+    return Array.from(uniqueCompanions.values());
 };
 
 // Get sessions of a specific user
@@ -102,11 +113,22 @@ export const getUserSessions = async (userId: string, limit = 10) => {
         .select(`companions:companion_id (*)`)
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
-        .limit(limit);
+        .limit(limit * 3); // Fetch more to account for duplicates
 
     if (error) throw new Error(error.message);
 
-    return data.map(({ companions }) => companions);
+    // Remove duplicates based on companion id and limit the results
+    const uniqueCompanions = new Map();
+
+    for (const session of data) {
+        const companion = session.companions as any;
+        if (companion && companion.id && !uniqueCompanions.has(companion.id)) {
+            uniqueCompanions.set(companion.id, companion);
+            if (uniqueCompanions.size >= limit) break;
+        }
+    }
+
+    return Array.from(uniqueCompanions.values());
 };
 
 // Get companions created by the user

@@ -5,7 +5,6 @@ import { useState, useTransition } from "react";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -21,13 +20,22 @@ interface CompanionsListProps {
     title: string;
     companions?: Companion[];
     classNames?: string;
-    showDeleteButton?: boolean; // Optional prop to show delete button
+    showDeleteButton?: boolean;
 }
 
 const CompanionsList = ({ title, companions, classNames, showDeleteButton = false }: CompanionsListProps) => {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [deleteConfirm, setDeleteConfirm] = useState<{ id: string, name: string } | null>(null);
+
+    const validCompanions = companions?.filter(companion => companion && companion.id) || [];
+
+    const uniqueCompanions = validCompanions.reduce((acc, companion) => {
+        if (!acc.find(c => c.id === companion.id)) {
+            acc.push(companion);
+        }
+        return acc;
+    }, [] as Companion[]);
 
     const handleDelete = (id: string) => {
         startTransition(async () => {
@@ -56,7 +64,7 @@ const CompanionsList = ({ title, companions, classNames, showDeleteButton = fals
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {companions?.map(({ id, subject, name, topic, duration }) => (
+                        {uniqueCompanions?.map(({ id, subject, name, topic, duration }) => (
                             <TableRow key={id}>
                                 <TableCell>
                                     <Link href={`/companions/${id}`}>

@@ -15,7 +15,6 @@ export default function SignUpPage() {
                                 alt="logo"
                                 width={46}
                                 height={44}
-                                className="brightness-0 invert"
                             />
                             <span className="text-2xl font-bold">Voice LMS</span>
                         </Link>
@@ -77,21 +76,43 @@ export default function SignUpPage() {
                         <SignUp
                             appearance={{
                                 elements: {
-                                    rootBox: "w-full",
-                                    card: "shadow-none border-none p-0 bg-transparent",
+                                    rootBox: "w-full font-[var(--font-bricolage)]",
+                                    card: "shadow-none border-none p-0 bg-transparent w-full",
                                     headerTitle: "hidden",
                                     headerSubtitle: "hidden",
-                                    socialButtonsBlockButton: "border border-black rounded-xl hover:bg-gray-50 text-black font-medium py-3",
-                                    socialButtonsBlockButtonText: "font-medium",
-                                    dividerRow: "my-6",
-                                    dividerText: "text-gray-500 text-sm",
-                                    formFieldInput: "border border-black rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary",
-                                    formButtonPrimary: "bg-primary hover:bg-primary/90 text-white rounded-xl py-3 font-semibold",
+                                    socialButtonsBlockButton: "border-2 border-gray-800 rounded-xl hover:bg-gray-50 text-gray-900 font-semibold py-4 px-6 text-base transition-all duration-200 hover:shadow-md w-full",
+                                    socialButtonsBlockButtonText: "font-semibold text-base",
+                                    socialButtonsIconButton: "w-5 h-5",
+                                    dividerRow: "my-8",
+                                    dividerText: "text-gray-500 text-sm font-medium",
+                                    dividerLine: "bg-gray-200",
+                                    formFieldLabel: "text-gray-700 font-semibold text-sm mb-2",
+                                    formFieldInput: "border-2 border-gray-800 rounded-xl px-4 py-4 focus:ring-2 focus:ring-primary focus:border-primary text-base font-medium bg-white transition-all duration-200 w-full",
+                                    formButtonPrimary: "bg-primary hover:bg-primary/90 text-white rounded-xl py-4 px-6 font-bold text-base transition-all duration-200 hover:shadow-lg w-full mt-2",
                                     footerAction: "hidden",
-                                    identityPreviewText: "text-gray-700",
-                                    formResendCodeLink: "text-primary hover:text-primary/80",
-                                    otpCodeFieldInput: "border border-black rounded-xl"
+                                    identityPreviewText: "text-gray-700 font-medium text-sm",
+                                    identityPreviewEditButton: "text-primary hover:text-primary/80 font-semibold text-sm",
+                                    formResendCodeLink: "text-primary hover:text-primary/80 font-semibold text-sm underline",
+                                    otpCodeFieldInput: "border-2 border-gray-800 rounded-xl text-center font-bold text-lg",
+                                    alternativeMethodsBlockButton: "text-primary hover:text-primary/80 font-semibold text-sm",
+                                    formFieldSuccessText: "text-green-600 font-medium text-sm",
+                                    formFieldErrorText: "text-red-600 font-medium text-sm",
+                                    formFieldWarningText: "text-yellow-600 font-medium text-sm",
+                                    formFieldHintText: "text-gray-500 font-medium text-xs",
+                                    formFieldInputShowPasswordButton: "text-gray-600 hover:text-gray-800",
+                                    modalContent: "font-[var(--font-bricolage)]",
+                                    modalCloseButton: "text-gray-500 hover:text-gray-700"
                                 },
+                                variables: {
+                                    fontFamily: "var(--font-bricolage)",
+                                    fontSize: "16px",
+                                    fontWeight: {
+                                        normal: "400",
+                                        medium: "500",
+                                        semibold: "600",
+                                        bold: "700"
+                                    }
+                                }
                             }}
                             path="/sign-up"
                             routing="path"
