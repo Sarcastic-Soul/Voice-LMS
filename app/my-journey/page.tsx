@@ -92,7 +92,11 @@ const Profile = async () => {
             My Companions {`(${companions.length})`}
           </AccordionTrigger>
           <AccordionContent>
-            <CompanionsList title="My Companions" companions={companions} />
+            <CompanionsList
+              title="My Companions"
+              companions={companions}
+              showDeleteButton={true}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

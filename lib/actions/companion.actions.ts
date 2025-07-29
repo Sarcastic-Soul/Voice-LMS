@@ -182,3 +182,32 @@ export const getBookmarkedCompanions = async (userId: string) => {
 
     return data;
 };
+
+// Delete a companion (only by the author)
+export const deleteCompanion = async (companionId: string) => {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Not authenticated");
+
+    const supabase = createSupabaseClient();
+
+    // First, verify that the user is the author of the companion
+    const { data: companion, error: fetchError } = await supabase
+        .from("companions")
+        .select("author")
+        .eq("id", companionId)
+        .single();
+
+    if (fetchError) throw new Error("Companion not found");
+    if (companion.author !== userId) throw new Error("Not authorized to delete this companion");
+
+    // Delete the companion (this will cascade delete session_history due to foreign key constraint)
+    const { error: deleteError } = await supabase
+        .from("companions")
+        .delete()
+        .eq("id", companionId)
+        .eq("author", userId);
+
+    if (deleteError) throw new Error(deleteError.message);
+
+    return { success: true };
+};
