@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ping-db": "node scripts/ping-database.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.19.4",
@@ -19,6 +20,7 @@
     "@supabase/supabase-js": "^2.49.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.1",
     "import-in-the-middle": "^1.14.2",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.511.0",

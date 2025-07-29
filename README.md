@@ -5,7 +5,9 @@ A modern Learning Management System that leverages voice interaction and AI to c
 
 ## 🚀 Features
 
-### 🎯 Core Functionality
+### 🎯 Core Functi## 🤖 Automated Database Management
+
+This project includes a simple GitHub Actions workflow that automatically pings your deployed application every 3 days to keep the Supabase database active (prevents free tier from pausing due to inactivity).lity
 - **Voice-Based Learning**: Learn through natural conversation using speech recognition and synthesis
 - **AI Tutoring**: Personalized AI companions powered by Google Gemini Flash 1.5
 - **Multiple Subjects**: Mathematics, Science, Language, History, Coding, Economics, and more
@@ -62,6 +64,7 @@ A modern Learning Management System that leverages voice interaction and AI to c
 - **TypeScript** - Static type checking
 - **Vercel** - Deployment and hosting
 - **Git** - Version control
+- **GitHub Actions** - Automated database keep-alive
 
 ## 📋 Prerequisites
 
@@ -144,11 +147,20 @@ CREATE TABLE session_history (
 3. Add your Clerk keys to the environment file
 4. Enable Google OAuth (optional)
 
-### 6. AI Service Setup (Google Gemini)
+### 5. AI Service Setup (Google Gemini)
 
 1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
 2. Create a new API key
 3. Add it to `NEXT_PUBLIC_GEMINI_API_KEY`
+
+### 6. GitHub Secrets (for Database Keep-Alive)
+
+Add this secret to your GitHub repository for the automated database ping workflow:
+
+1. Go to your GitHub repository settings
+2. Navigate to Secrets and Variables → Actions
+3. Add the following secret:
+   - `WEBSITE_URL`: Your deployed application URL (e.g., `https://your-app.vercel.app`)
 
 ### 7. Run Development Server
 ```bash
@@ -274,7 +286,41 @@ pnpm build
 pnpm start
 ```
 
-## 🤝 Contributing
+## � Automated Database Management
+
+This project includes a GitHub Actions workflow that automatically pings the Supabase database every 3 days to prevent it from pausing due to inactivity (common with Supabase free tier).
+
+### How It Works
+- **Simple HTTP Requests**: Just pings your deployed website URL
+- **Scheduled Execution**: Runs every 3 days at 12:00 UTC
+- **Manual Trigger**: Can be manually triggered from GitHub Actions tab
+- **Fallback Logic**: Tries homepage first, then API endpoints if needed
+- **No Dependencies**: Uses only built-in curl commands
+
+### Setup Requirements
+1. Add your deployed website URL to GitHub repository secrets:
+   - `WEBSITE_URL` (e.g., `https://your-app.vercel.app`)
+2. Ensure GitHub Actions are enabled for your repository
+3. The workflow will automatically start running on the scheduled interval
+
+### Manual Execution
+To manually trigger the database ping:
+
+**Via GitHub Actions:**
+1. Go to your repository's "Actions" tab
+2. Select "Keep Database Active" workflow
+3. Click "Run workflow" → "Run workflow"
+
+**Via Local Script:**
+```bash
+# Using environment variable
+WEBSITE_URL=https://your-app.vercel.app pnpm run ping-db
+
+# Using command line argument
+pnpm run ping-db https://your-app.vercel.app
+```
+
+## �🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
