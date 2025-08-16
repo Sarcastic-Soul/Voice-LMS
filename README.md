@@ -2,7 +2,7 @@
 
 A modern Learning Management System that leverages voice interaction and AI to create personalized tutoring experiences. Learn through natural conversation with AI companions across various subjects.
 
-![screenshot](./voice-lms.png)  
+![screenshot](./public/voice-lms.png)  
 
 ## 🚀 Features
 
