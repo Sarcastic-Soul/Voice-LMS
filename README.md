@@ -2,10 +2,11 @@
 
 A modern Learning Management System that leverages voice interaction and AI to create personalized tutoring experiences. Learn through natural conversation with AI companions across various subjects.
 
+![screenshot](./voice-lms.png)  
 
 ## 🚀 Features
 
-### 🎯 Core Functi## 🤖 Automated Database Management
+### 🎯 Core Function 🤖 Automated Database Management
 
 This project includes a simple GitHub Actions workflow that automatically pings your deployed application every 3 days to keep the Supabase database active (prevents free tier from pausing due to inactivity).lity
 - **Voice-Based Learning**: Learn through natural conversation using speech recognition and synthesis
